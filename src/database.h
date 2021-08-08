@@ -4,6 +4,10 @@
 #include <set>
 #include <string>
 #include <vector>
+#include <sstream>
+#include <functional>
+
+
 
 #include "date.h"
 #include "node.h"
@@ -14,18 +18,17 @@ class Database {
 public:
   void Add(const Date&, const string&);
 
-  set<string> Find(const Date&) const;
-
   void Print(ostream&) const;
 
-  int FindIf();
-
+  //template<typename func>
+  set<string> FindIf(std::function<bool(const Date&, const string&)>&) const;
 
   template<typename func>
-  int RemoveIf(func);
+  int RemoveIf(func&);
 
-  void Last(const Date&) const;
+  stringstream Last(const Date&) const;
 
 private:
-  map<Date, set<string>> storage;
+  map<Date, vector<string>> storage1;
+  map<Date, set<string>> storage2;
 };

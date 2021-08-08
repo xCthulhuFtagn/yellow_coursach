@@ -1,19 +1,26 @@
 #include "database.h"
 
 #include <algorithm>
+#include <stdexcept>
 
 using namespace std;
 
+//добавь нормальную обработку для set и string
+
 void Database::Add(const Date& date, const string& event) {
-	storage[date].insert(event);
+	if(storage2.at(date))
+	storage1[date].push_back(event);
 }
 
-set<string> Database::Find(const Date& date) const {
-	if (storage.count(date) > 0) {
-	  return storage.at(date);
-	} else {
-	  return {};
+//template<typename func>
+set<string> Database::FindIf(std::function<bool(const Date&, const string&)>& predicate) const{
+	set<string> out;
+	for(auto& el : storage){
+		for(auto& vec_el : el.second){
+			if(predicate(el.first, vec_el)) out.insert(vec_el);
+		}
 	}
+	return out;
 }
 
 void Database::Print(ostream& os) const {
@@ -25,26 +32,33 @@ void Database::Print(ostream& os) const {
 }
 
 template<typename func>
-int Database::RemoveIf(func predicate){
-	if(predicate){
+int Database::RemoveIf(func& predicate){
+	int num = 0;
+	for(auto& el : storage){
+		remove_if(el.second.begin(), el.second.end(), [&predicate, &el, &num](const Date& input){
+			return predicate(el.first, el.second);
+			++num;
+		});
 
 	}
+	return num;
 }
-/*
 
-void Database::Last(const Date& date) const{
+stringstream Database::Last(const Date& date) const{
+	stringstream stream;
 	auto begin = storage.begin();
 	auto it = lower_bound(begin, storage.end(), date);
 	if(it != begin){
 		--it;
-		cout << it->first << " ";
+		stream << it->first << " ";
 		for(const auto& el : it->second){
-			cout << el << " ";
+			stream << el << " ";
 		}
-		cout << endl;
+		stream << endl;
 	} else{
-		cout << "No entries" <<endl;
+		throw invalid_argument("");
 	}
+	return stream;
 }
-*/
+
 
