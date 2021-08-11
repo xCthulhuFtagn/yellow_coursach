@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
-#include <functional>
+//#include <functional>
 
 
 
@@ -20,15 +20,15 @@ public:
 
   void Print(ostream&) const;
 
-  //template<typename func>
-  set<string> FindIf(std::function<bool(const Date&, const string&)>&) const;
+  template<typename func>
+  set<string> FindIf(func) const;
 
   template<typename func>
   int RemoveIf(func&);
 
-  stringstream Last(const Date&) const;
+  string Last(const Date&) const;
 
 private:
-  map<Date, vector<string>> storage1;
-  map<Date, set<string>> storage2;
+  map<Date, vector<string>> storage;
+  //map<Date, set<string>> storage2;
 };
